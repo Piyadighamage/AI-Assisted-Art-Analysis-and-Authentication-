@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results Display</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .authenticity-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .authenticity-badge.human {
+            background: #10b981;
+            color: white;
+        }
+
+        .authenticity-badge.ai {
+            background: #ef4444;
+            color: white;
+        }
+
+        .confidence-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            transition: width 0.8s ease;
+        }
+
+        .style-prediction {
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Test Results Display</h2>
+        <button class="btn btn-primary" onclick="testResults()">Test with Sample Data</button>
+        
+        <div id="resultsContent" class="mt-4">
+            <!-- Results will appear here -->
+        </div>
+    </div>
+
+    <script>
+        function testResults() {
+            // Sample data that matches your backend response
+            const sampleData = {
+                "authenticity": {
+                    "prediction": "Human Created",
+                    "confidence": 98.71,
+                    "is_human": true
+                },
+                "style": {
+                    "predicted_style": "Renaissance",
+                    "confidence": 87.5,
+                    "top_3_predictions": [
+                        {"style": "Renaissance", "confidence": 87.5},
+                        {"style": "Baroque", "confidence": 23.4},
+                        {"style": "Realism", "confidence": 15.2}
+                    ]
+                },
+                "image_url": "https://via.placeholder.com/400x300"
+            };
+            
+            showResults(sampleData);
+        }
+
+        function showResults(data) {
+            console.log('Showing results:', data);
+            
+            const resultsContent = document.getElementById('resultsContent');
+            
+            let html = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="${data.image_url}" class="img-fluid rounded" alt="Analyzed artwork">
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="mb-3">Analysis Results</h5>
+            `;
+
+            // Authenticity Results
+            if (data.authenticity && !data.authenticity.error) {
+                const isHuman = data.authenticity.is_human;
+                const badgeClass = isHuman ? 'human' : 'ai';
+                const confidence = typeof data.authenticity.confidence === 'object' 
+                    ? parseFloat(data.authenticity.confidence) 
+                    : data.authenticity.confidence;
+                
+                html += `
+                    <div class="result-card">
+                        <h6>Authenticity Assessment</h6>
+                        <div class="authenticity-badge ${badgeClass}">
+                            ${data.authenticity.prediction}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Confidence:</span>
+                            <strong>${confidence.toFixed(2)}%</strong>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: ${confidence}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Style Results
+            if (data.style && !data.style.error) {
+                const confidence = typeof data.style.confidence === 'object' 
+                    ? parseFloat(data.style.confidence) 
+                    : data.style.confidence;
+                    
+                html += `
+                    <div class="result-card">
+                        <h6>Style Classification</h6>
+                        <div class="style-prediction">
+                            <strong>${data.style.predicted_style}</strong>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <span>Confidence:</span>
+                                <strong>${confidence.toFixed(2)}%</strong>
+                            </div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: ${confidence}%"></div>
+                            </div>
+                        </div>
+                `;
+
+                if (data.style.top_3_predictions && data.style.top_3_predictions.length > 1) {
+                    html += `
+                        <div class="mt-3">
+                            <small class="text-muted">Alternative predictions:</small>
+                    `;
+                    
+                    data.style.top_3_predictions.slice(1).forEach(pred => {
+                        const predConfidence = typeof pred.confidence === 'object' 
+                            ? parseFloat(pred.confidence) 
+                            : pred.confidence;
+                        html += `
+                            <div class="d-flex justify-content-between mt-1">
+                                <span>${pred.style}</span>
+                                <span>${predConfidence.toFixed(2)}%</span>
+                            </div>
+                        `;
+                    });
+                    
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+            }
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            resultsContent.innerHTML = html;
+
+            // Animate confidence bars
+            setTimeout(() => {
+                document.querySelectorAll('.confidence-fill').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 100);
+        }
+    </script>
+</body>
+</html>

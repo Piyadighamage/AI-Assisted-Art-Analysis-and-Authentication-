@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Art Analysis Platform - Home{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold text-white mb-4">
+                    AI-Powered Art Analysis & Authentication
+                </h1>
+                <p class="lead text-white-50 mb-4">
+                    Upload artwork images to analyze authenticity and identify artistic styles using advanced deep learning models.
+                </p>
+                <div class="d-flex gap-3">
+                    <button class="btn btn-light btn-lg" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-upload me-2"></i>Upload Artwork
+                    </button>
+                    <a href="#features" class="btn btn-outline-light btn-lg">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content" id="uploadContent">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h4>Drop your artwork here</h4>
+                        <p>or click to browse files</p>
+                        <small class="text-muted">Supports JPG, PNG, GIF (max 16MB)</small>
+                    </div>
+                    <div class="preview-container d-none" id="previewContainer">
+                        <img id="previewImage" class="preview-image" alt="Preview">
+                        <div class="preview-overlay">
+                            <button class="btn btn-primary" id="analyzeBtn">
+                                <i class="fas fa-search me-2"></i>Analyze Artwork
+                            </button>
+                            <button class="btn btn-outline-light ms-2" id="changeImageBtn">
+                                <i class="fas fa-edit me-2"></i>Change Image
+                            </button>
+                        </div>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="features" class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col">
+                <h2 class="display-5 fw-bold">Advanced Analysis Features</h2>
+                <p class="lead text-muted">Comprehensive artwork analysis using state-of-the-art AI</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Authenticity Detection</h4>
+                    <p>Determine if artwork is human-created or AI-generated using advanced neural networks trained on millions of images.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-brush"></i>
+                    </div>
+                    <h4>Style Classification</h4>
+                    <p>Identify artistic movements and styles including Impressionism, Renaissance, Baroque, and more with high accuracy.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="display-5 fw-bold mb-4">About This Platform</h2>
+                <p class="lead">
+                    This platform leverages cutting-edge deep learning models to provide accurate analysis of artwork authenticity and style classification. Built for art historians, museums, collectors, and enthusiasts who need reliable authentication tools.
+                </p>
+                <div class="row mt-5">
+                    <div class="col-md-4">
+                        <h5>Deep Learning Models</h5>
+                        <p class="text-muted">EfficientNet and ConvNeXt architectures for superior accuracy</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Ensemble Prediction</h5>
+                        <p class="text-muted">Multiple models combined for enhanced reliability</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Instant Results</h5>
+                        <p class="text-muted">Get comprehensive analysis within seconds</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Results Modal -->
+<div class="modal fade" id="resultsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Analysis Results</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="resultsContent">
+                <!-- Results will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h6>Analyzing artwork...</h6>
+                <p class="text-muted mb-0">This may take a few moments</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
