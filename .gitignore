@@ -1,0 +1,2 @@
+trained_models/authenticity_model.keras
+trained_models/style_model_convnext.keras
